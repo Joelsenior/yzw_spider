@@ -1,8 +1,11 @@
 # 研招网招生信息爬虫
 ## 依赖库
-* beautifulsoup
+* beautifulsoup4
 * pandas
 * request
+* lxml
 ---
 ## 抓取信息列表
 '学校', '考试方式', '院系所', '专业', '学习方式', '研究方向', '指导教师', '拟招生人数', '备注'
+
+lxml需要下载本地cmd路径下，然后用pip install "依赖包全称（包含后缀）"安装。
