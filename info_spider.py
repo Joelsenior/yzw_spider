@@ -69,7 +69,7 @@ class Graduate:
                           "category")
         self.get_list_fun('http://yz.chsi.com.cn/zsml/pages/getZy.jsp',
                           'major')
-
+# 第一步，输入省市、学科代码，获取学校urls
     def get_school_url(self):
         url = "https://yz.chsi.com.cn/zsml/queryAction.do"
         data = {
@@ -83,7 +83,7 @@ class Graduate:
         schools_url = re.findall('<a href="(.*?)" target="_blank">.*?</a>',
                                  str(content))
         return schools_url
-
+    #获得地区、代码、学校确定下的学院url
     def get_college_data(self, url):
         response = requests.get(url, headers=self.head)
         html = response.text
@@ -91,7 +91,7 @@ class Graduate:
             '<td class="ch-table-center"><a href="(.*?)" target="_blank">查看</a>',
             html)
         return colleges_url
-
+    #获取地区、专业、学校、学院下的信息
     def get_final_data(self, url):
         temp = []
         response = requests.get(url, headers=self.head)
@@ -100,13 +100,21 @@ class Graduate:
         summary = soup.find_all('td', {"class": "zsml-summary"})
         for x in summary:
             temp.append(x.get_text())
-        summary = soup.find_all('span', {"class": "zsml-bz"})
+        summary = soup.find_all('span', {"class": "zsml-bz"})  #爬取备注
         temp.append(summary[1].get_text())
+        # summary = soup.find_all('span', {"class": "zsml-bz"})
+        #爬取学科
+        html = html.replace("\r\n","")
+        subjects = re.findall('<td>(.*?)<span class="sub-msg">',html,re.S)
+        for sub in subjects:
+            temp.append(sub)
+        # temp.append(subjects)
+        print(subjects)
         self.data.append(temp)
-
+    #获取学校数据
     def get_schools_data(self):
         url = "http://yz.chsi.com.cn"
-        schools_url = self.get_school_url()
+        schools_url = self.get_school_url() #填入获取的学校urls
         amount = len(schools_url)
         i = 0
         for school_url in schools_url:
@@ -114,8 +122,8 @@ class Graduate:
             page = 1
             temp = []
             while True:
-                url_ = url + school_url + '&pageno={}'.format(page)
-                colleges_url = self.get_college_data(url_)
+                url_ = url + school_url + '&pageno={}'.format(page) # 将研招网网址url+学校url+page 组合成学校页url_
+                colleges_url = self.get_college_data(url_) #获得地区、专业、学校下的所有学院url
                 if colleges_url not in temp:
                     print('收集第{}页信息'.format(page))
                     temp.append(colleges_url)
@@ -131,8 +139,10 @@ class Graduate:
 
     def get_data_frame(self):
         data = DataFrame(self.data)
+        # data.columns = ['学校', '考试方式', '院系所', '专业',
+        #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
         data.columns = ['学校', '考试方式', '院系所', '专业',
-                        '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
+                        '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
         # data.drop(labels='', axis=1, inplace=True)
         data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
         data.to_csv(self.provinceName + "研究生招生信息.csv",
@@ -141,12 +151,13 @@ class Graduate:
 
 if __name__ == '__main__':
     # category = "####" # 专业代码
-    category = "0831" # 专业代码
-    for i in list(provinceNmaeDict.keys()):
+    category = "1001" # 专业代码
+    for i in list(provinceNmaeDict.keys()): #将keys转化为列表
         province = i
         if province in provinceNmaeDict.keys():
             spyder = Graduate(province, category, provinceNmaeDict[province])
-            a  = spyder.get_schools_data()
+            spyder.get_schools_data()
+            # a  = spyder.get_schools_data()
             # print(a)
             spyder.get_data_frame()
             time.sleep(30) # 延迟时间30s
