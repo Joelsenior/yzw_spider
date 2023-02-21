@@ -38,18 +38,19 @@ class Graduate:
 # 第一步，输入省市、学科代码，获取学校urls
     def get_school_url(self):
         url = "https://yz.chsi.com.cn/zsml/queryAction.do"
-        data = {
-            "ssdm": self.province,
-            "yjxkdm": self.category,
-            "dwmc":self.schoolname,
-        }
-        response = requests.post(url, data=data, headers=self.head)
-        html = response.text
-        reg = re.compile(r'(<tr>.*? </tr>)', re.S)
-        content = re.findall(reg, html)
-        schools_url = re.findall('<a href="(.*?)" target="_blank">.*?</a>',
-                                 str(content))
-        return schools_url
+        for self.catego in self.category:
+            data = {
+                "ssdm": self.province,
+                "yjxkdm": self.catego,
+                "dwmc":self.schoolname,
+            }
+            response = requests.post(url, data=data, headers=self.head)
+            html = response.text
+            reg = re.compile(r'(<tr>.*? </tr>)', re.S)
+            content = re.findall(reg, html)
+            schools_url = re.findall('<a href="(.*?)" target="_blank">.*?</a>',
+                                    str(content))
+            return schools_url
     #获得地区、代码、学校确定下的学院url
     def get_college_data(self, url):
         response = requests.get(url, headers=self.head)
@@ -123,7 +124,7 @@ class Graduate:
         data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
         # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
         data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
-        data.to_csv(self.provinceName + self.category + "专业模板.csv",
+        data.to_csv(self.provinceName + self.schoolname + "专业模板.csv",
                     encoding="utf_8_sig", index=False)
-        csvname = self.provinceName + self.category + "专业模板.csv"
+        csvname = self.provinceName + self.schoolname + "专业模板.csv"
         return csvname #返回字符串

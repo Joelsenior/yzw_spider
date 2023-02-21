@@ -2,7 +2,15 @@ import time
 from GraduateClass import Graduate
 from copypasteexcel import copy_paste_excel_columns
 n = range(1,5)
-provinceNmaeDict = {
+if __name__ == '__main__':
+    ##################################
+    ##################################
+    # category = ["0855","0831","0777","1001","1009","0811","0810","0804","0802","0805","0823","1202","1201"] # 北航专业代码
+    category = ["0807","0701"]
+    schoolname = '北京科技大学'
+    # savepath = r'D:\Users\pachong\yzw_spider\北工spilt'
+    savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\北科'
+    provinceNmaeDict = {
     '11': '北京市',
     # '37': '山东省',
     # '22': '吉林省',
@@ -38,12 +46,6 @@ provinceNmaeDict = {
     # '81': '香港特别行政区',
     # '82': '澳门特别行政区'
 }
-if __name__ == '__main__':
-    ##################################
-    ##################################
-    category = "0855" # 专业代码
-    schoolname = '北京航空航天大学'
-    savepath = r'D:\Users\pachong\yzw_spider\spilt'
     ##################################
     ##################################
     for i in list(provinceNmaeDict.keys()): #将keys转化为列表
