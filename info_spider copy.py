@@ -1,0 +1,58 @@
+import time
+from GraduateClass import Graduate
+from copypasteexcel import copy_paste_excel_columns
+n = range(1,5)
+provinceNmaeDict = {
+    '11': '北京市',
+    # '37': '山东省',
+    # '22': '吉林省',
+    # '12': '天津市',
+    # '13': '河北省',
+    # '14': '山西省',
+    # '15': '内蒙古自治区',
+    # '21': '辽宁省',
+    # '23': '黑龙江省',
+    # '31': '上海市',
+    # '32': '江苏省',
+    # '33': '浙江省',
+    # '34': '安徽省',
+    # '35': '福建省',
+    # '36': '江西省',
+    # '41': '河南省',
+    # '42': '湖北省',
+    # '43': '湖南省',
+    # '44': '广东省',
+    # '45': '广西壮族自治区',
+    # '46': '海南省',
+    # '50': '重庆市',
+    # '51': '四川省',
+    # '52': '贵州省',
+    # '53': '云南省',
+    # '54': '西藏自治区',
+    # '61': '陕西省',
+    # '62': '甘肃省',
+    # '63': '青海省',
+    # '64': '宁夏回族自治区',
+    # '65': '新疆维吾尔自治区',
+    # '71': '台湾省',
+    # '81': '香港特别行政区',
+    # '82': '澳门特别行政区'
+}
+if __name__ == '__main__':
+    ##################################
+    ##################################
+    category = "0855" # 专业代码
+    schoolname = '北京航空航天大学'
+    savepath = r'D:\Users\pachong\yzw_spider\spilt'
+    ##################################
+    ##################################
+    for i in list(provinceNmaeDict.keys()): #将keys转化为列表
+        province = i
+        if province in provinceNmaeDict.keys():
+            spyder = Graduate(province, category, provinceNmaeDict[province],schoolname)
+            spyder.get_schools_data()
+            openfilename = spyder.get_data_frame()
+            time.sleep(1) # 延迟时间1s
+        for i in n:
+            copy_paste_excel_columns(openfilename,i,savepath) 
+
