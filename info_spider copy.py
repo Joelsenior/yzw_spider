@@ -9,9 +9,9 @@ if __name__ == '__main__':
     # category = ["0807","0701"]
     categories = ["0777"]
     schoolname = '北京航空航天大学'
-    savepath = r'D:\Users\pachong\yzw_spider\北航'
+    # savepath = r'D:\Users\pachong\yzw_spider\北航'
     last_data = []
-    # savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\北科'
+    savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\北航'
    
     provinceNmaeDict = {
     '11': '北京市',
@@ -57,11 +57,12 @@ if __name__ == '__main__':
             if province in provinceNmaeDict.keys():
                 spyder = Graduate(province, category, provinceNmaeDict[province],schoolname)
                 spyder.get_schools_data()
-                spyder2 = Graduate(province, category, provinceNmaeDict[province],schoolname)
-                spyder2.get_final_data()
-                last_data.append(B)
-                openfilename = get_data_frame(last_data) 
-                time.sleep(0.1) # 延迟时间1s
+                # spyder2 = Graduate(province, category, provinceNmaeDict[province],schoolname)
+                # B = spyder.get_final_data()
+                last_data.extend(spyder.data)
+                # print(last_data)
+    openfilename = get_data_frame(last_data) 
+    time.sleep(1) # 延迟时间1s
                  
 # for i in n:
 #     copy_paste_excel_columns(openfilename,i,savepath) 

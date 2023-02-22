@@ -81,15 +81,15 @@ class Graduate:
         subjects = re.findall('<td>(.*?)<span class="sub-msg">',html,re.S)
         # for sub in subjects:
         #    sub = str(sub).strip()
-        for i,sub in enumerate(subjects):
+        for i,sub in enumerate(subjects): #bao liu qian si ge xue ke
             if i == 4:
                 break
             temp.append(sub)
         # temp.append(subjects)
         # print(subjects)
-        c = self.data.append(temp)
+        self.data.append(temp)
         # print(self.data)
-        return c  #返回数据
+        # return c  #返回数据
         
     #获取学校数据
     def get_schools_data(self):
@@ -139,20 +139,23 @@ class Graduate:
     #     clean_csv(csvname)
     #     return csvname #返回字符串
 def get_data_frame(last_data):
-    data = DataFrame(last_data)
-    # data.columns = ['学校', '考试方式', '院系所', '专业',
-    #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
-    data.columns = ['学校', '考试方式', '院系所', '专业',
-                    '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
-    data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
-    data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
-    data.drop(labels='学习方式', axis=1, inplace=True) #填写需要丢掉的列
-    # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
-    data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
-    data.to_csv("专业模板.csv",
-                encoding="utf_8_sig", index=False)
-    csvname = "专业模板.csv"
-    #重复行清理
+    sub_last_datas = [last_data[i:i+13] for i in range(0, len(last_data), 13)]
+    for sub_list_data in sub_last_datas:
+        data = DataFrame(sub_list_data)
+        # data.columns = ['学校', '考试方式', '院系所', '专业',
+        #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
+        print(data) 
+        data.columns = ['学校', '考试方式', '院系所', '专业',
+                        '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
+        data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
+        data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
+        data.drop(labels='学习方式', axis=1, inplace=True) #填写需要丢掉的列
+        # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
+        data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
+        data.to_csv("专业模板.csv",
+                    encoding="utf_8_sig", index=False)
+        csvname = "专业模板.csv"
+        #重复行清理
     clean_csv(csvname)
     return csvname #返回字符串
 def clean_csv(cleaning_file_name):
