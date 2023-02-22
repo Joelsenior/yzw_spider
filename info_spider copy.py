@@ -1,15 +1,18 @@
 import time
-from GraduateClass import Graduate
+from GraduateClass import Graduate,get_data_frame
 from copypasteexcel import copy_paste_excel_columns
 n = range(1,5)
 if __name__ == '__main__':
     ##################################
     ##################################
-    # category = ["0855","0831","0777","1001","1009","0811","0810","0804","0802","0805","0823","1202","1201"] # 北航专业代码
-    category = ["0807","0701"]
-    schoolname = '北京科技大学'
-    # savepath = r'D:\Users\pachong\yzw_spider\北工spilt'
-    savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\北科'
+    # categories = ["0855","0831","0777","1001","1009","0811","0810","0804","0802","0805","0823","1202","1201"] # 北航专业代码
+    # category = ["0807","0701"]
+    categories = ["0777"]
+    schoolname = '北京航空航天大学'
+    savepath = r'D:\Users\pachong\yzw_spider\北航'
+    last_data = []
+    # savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\北科'
+   
     provinceNmaeDict = {
     '11': '北京市',
     # '37': '山东省',
@@ -45,16 +48,21 @@ if __name__ == '__main__':
     # '71': '台湾省',
     # '81': '香港特别行政区',
     # '82': '澳门特别行政区'
-}
+    }
     ##################################
     ##################################
     for i in list(provinceNmaeDict.keys()): #将keys转化为列表
-        province = i
-        if province in provinceNmaeDict.keys():
-            spyder = Graduate(province, category, provinceNmaeDict[province],schoolname)
-            spyder.get_schools_data()
-            openfilename = spyder.get_data_frame()
-            time.sleep(1) # 延迟时间1s
-        for i in n:
-            copy_paste_excel_columns(openfilename,i,savepath) 
+        for category in categories:
+            province = i
+            if province in provinceNmaeDict.keys():
+                spyder = Graduate(province, category, provinceNmaeDict[province],schoolname)
+                spyder.get_schools_data()
+                spyder2 = Graduate(province, category, provinceNmaeDict[province],schoolname)
+                spyder2.get_final_data()
+                last_data.append(B)
+                openfilename = get_data_frame(last_data) 
+                time.sleep(0.1) # 延迟时间1s
+                 
+# for i in n:
+#     copy_paste_excel_columns(openfilename,i,savepath) 
 

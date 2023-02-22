@@ -19,6 +19,7 @@ class Graduate:
         self.category = category
         self.provinceName = provinceName
         self.schoolname = schoolname #增加学校搜索
+        # self.c = []
 
     def get_list_fun(self, url, name):
         response = requests.get(url, headers=self.head)
@@ -38,19 +39,19 @@ class Graduate:
 # 第一步，输入省市、学科代码，获取学校urls
     def get_school_url(self):
         url = "https://yz.chsi.com.cn/zsml/queryAction.do"
-        for self.catego in self.category:
-            data = {
-                "ssdm": self.province,
-                "yjxkdm": self.catego,
-                "dwmc":self.schoolname,
-            }
-            response = requests.post(url, data=data, headers=self.head)
-            html = response.text
-            reg = re.compile(r'(<tr>.*? </tr>)', re.S)
-            content = re.findall(reg, html)
-            schools_url = re.findall('<a href="(.*?)" target="_blank">.*?</a>',
-                                    str(content))
-            return schools_url
+        # for self.catego in self.category:
+        data = {
+            # "ssdm": self.province,
+            "yjxkdm": self.category,
+            "dwmc":self.schoolname,
+        }
+        response = requests.post(url, data=data, headers=self.head)
+        html = response.text
+        reg = re.compile(r'(<tr>.*? </tr>)', re.S)
+        content = re.findall(reg, html)
+        schools_url = re.findall('<a href="(.*?)" target="_blank">.*?</a>',
+                                str(content))
+        return schools_url
     #获得地区、代码、学校确定下的学院url
     def get_college_data(self, url):
         response = requests.get(url, headers=self.head)
@@ -85,8 +86,11 @@ class Graduate:
                 break
             temp.append(sub)
         # temp.append(subjects)
-        print(subjects)
-        self.data.append(temp)
+        # print(subjects)
+        c = self.data.append(temp)
+        # print(self.data)
+        return c  #返回数据
+        
     #获取学校数据
     def get_schools_data(self):
         url = "http://yz.chsi.com.cn"
@@ -107,24 +111,53 @@ class Graduate:
                     page += 1
                     for college_url in colleges_url:
                         _url = url + college_url
+                        # print(_url)
                         self.get_final_data(_url)
                 else:
                     break
+            # print("已完成" + self.provinceName + "第" + str(i) + "/" +
+            #       str(amount) + "个高校爬取")
             print("已完成" + self.provinceName + "第" + str(i) + "/" +
-                  str(amount) + "个高校爬取")
+                  str(amount) + "个高校爬取")                  
             #time.sleep(30)
 
-    def get_data_frame(self):
-        data = DataFrame(self.data)
-        # data.columns = ['学校', '考试方式', '院系所', '专业',
-        #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
-        data.columns = ['学校', '考试方式', '院系所', '专业',
-                        '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
-        data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
-        data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
-        # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
-        data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
-        data.to_csv(self.provinceName + self.schoolname + "专业模板.csv",
-                    encoding="utf_8_sig", index=False)
-        csvname = self.provinceName + self.schoolname + "专业模板.csv"
-        return csvname #返回字符串
+    # def get_data_frame(self):
+    #     data = DataFrame(self.data)
+    #     # data.columns = ['学校', '考试方式', '院系所', '专业',
+    #     #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
+    #     data.columns = ['学校', '考试方式', '院系所', '专业',
+    #                     '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
+    #     data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
+    #     data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
+    #     data.drop(labels='学习方式', axis=1, inplace=True) #填写需要丢掉的列
+    #     # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
+    #     data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
+    #     data.to_csv(self.provinceName + self.schoolname + "专业模板.csv",
+    #                 encoding="utf_8_sig", index=False)
+    #     csvname = self.provinceName + self.schoolname + "专业模板.csv"
+    #     #重复行清理
+    #     clean_csv(csvname)
+    #     return csvname #返回字符串
+def get_data_frame(last_data):
+    data = DataFrame(last_data)
+    # data.columns = ['学校', '考试方式', '院系所', '专业',
+    #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
+    data.columns = ['学校', '考试方式', '院系所', '专业',
+                    '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
+    data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
+    data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
+    data.drop(labels='学习方式', axis=1, inplace=True) #填写需要丢掉的列
+    # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
+    data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
+    data.to_csv("专业模板.csv",
+                encoding="utf_8_sig", index=False)
+    csvname = "专业模板.csv"
+    #重复行清理
+    clean_csv(csvname)
+    return csvname #返回字符串
+def clean_csv(cleaning_file_name):
+    df = pd.read_csv(cleaning_file_name)
+    # df.loc[1:, colum_name] = '不区分方向'
+    df.iloc[:, 4] = '不区分方向'
+    df.drop_duplicates(inplace=True)
+    df.to_csv(cleaning_file_name, index=False)
