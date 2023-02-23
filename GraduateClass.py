@@ -6,7 +6,7 @@ import re
 import time
 import lxml
 import pandas as pd
-
+import csv
 class Graduate:
     def __init__(self, province, category, provinceName,schoolname):
         self.head = {
@@ -121,29 +121,72 @@ class Graduate:
                   str(amount) + "个高校爬取")                  
             #time.sleep(30)
 
+# def get_data_frame(last_data):
+#     sub_last_datas = [last_data[i:i+13] for i in range(0, len(last_data), 13)]
+#     for sub_list_data in sub_last_datas:
+#         data = DataFrame(sub_list_data)
+#         # data.columns = ['学校', '考试方式', '院系所', '专业',
+#         #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
+#         # print(data) 
+#         data.columns = ['学校', '考试方式', '院系所', '专业',
+#                         '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
+#         data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
+#         data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
+#         data.drop(labels='学习方式', axis=1, inplace=True) #填写需要丢掉的列
+#         # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
+#         data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
+#         data.to_csv("专业模板.csv",
+#                     encoding="utf_8_sig", index=False)
+#         csvname = "专业模板.csv"
+#         #重复行清理
+#     clean_csv(csvname)
+#     return csvname #返回字符串
+
 def get_data_frame(last_data):
-    sub_last_datas = [last_data[i:i+13] for i in range(0, len(last_data), 13)]
-    for sub_list_data in sub_last_datas:
-        data = DataFrame(sub_list_data)
-        # data.columns = ['学校', '考试方式', '院系所', '专业',
-        #                 '学习方式', '研究方向', '指导教师', '拟招生人数', '备注']
-        print(data) 
-        data.columns = ['学校', '考试方式', '院系所', '专业',
-                        '学习方式', '研究方向', '指导教师', '拟招生人数', '备注','政治','外语','业务课1','业务课2']
-        data.drop(labels='备注', axis=1, inplace=True) #填写需要丢掉的列，此处把备注列丢掉了。
-        data.drop(labels='拟招生人数', axis=1, inplace=True) #填写需要丢掉的列
-        data.drop(labels='学习方式', axis=1, inplace=True) #填写需要丢掉的列
-        # data.drop(labels='研究方向', axis=1, inplace=True) #填写需要丢掉的列
-        data.drop(labels='指导教师', axis=1, inplace=True) #填写需要丢掉的列
-        data.to_csv("专业模板.csv",
-                    encoding="utf_8_sig", index=False)
-        csvname = "专业模板.csv"
+    # 定义列标题和数据
+    header = ['学校', '考试方式', '院系所', '专业', '学习方式', '研究方向', '指导教师',
+            '拟招生人数', '备注', '政治', '外语', '业务课1', '业务课2']
+
+    # data = [['1','2','3','4','5','6','7','8','9','10','11','12','13'],
+    #         ['1','2','3','4','5','6','7','8','9','10','11','12','13'],
+    #         ['1','2','3','4','5','6','7','8','9','10','11','12','13']]
+
+    # 打开csv文件并写入数据
+    with open('所有专业原始数据.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        # 写入列标题
+        writer.writerow(header)
+        
+        # 逐行写入数据
+        # for row in data:
+        for row in last_data:
+            writer.writerow(row)
+    csvname = "所有专业原始数据.csv"
         #重复行清理
+    del_colum(csvname)
     clean_csv(csvname)
     return csvname #返回字符串
+#清理重复行
 def clean_csv(cleaning_file_name):
-    df = pd.read_csv(cleaning_file_name)
+    df = pd.read_csv(cleaning_file_name,encoding='gbk')
     # df.loc[1:, colum_name] = '不区分方向'
     df.iloc[:, 4] = '不区分方向'
     df.drop_duplicates(inplace=True)
     df.to_csv(cleaning_file_name, index=False)
+    
+#删除不用的列
+def del_colum(csvname):   
+    # 读取 CSV 文件
+    with open(csvname, 'r') as input_file:
+        reader = csv.reader(input_file)
+        header = next(reader)  # 读取列标题
+        rows = [row for row in reader]  # 读取数据行
+    # 删除指定列
+    cols_to_remove = [4, 6,7,8]  # 要删除的列的索引，从0开始
+    header = [header[i] for i in range(len(header)) if i not in cols_to_remove]  # 删除列标题
+    rows = [[row[i] for i in range(len(row)) if i not in cols_to_remove] for row in rows]  # 删除数据列
+    # 写入 CSV 文件
+    with open(csvname, 'w', newline='') as output_file:
+        writer = csv.writer(output_file)
+        writer.writerow(header)  # 写入修改后的列标题
+        writer.writerows(rows)  # 写入修改后的数据行

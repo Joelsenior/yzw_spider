@@ -1,17 +1,18 @@
 import time
 from GraduateClass import Graduate,get_data_frame
 from copypasteexcel import copy_paste_excel_columns
+from excel2dict import excel2dict
 n = range(1,5)
 if __name__ == '__main__':
     ##################################
     ##################################
     # categories = ["0855","0831","0777","1001","1009","0811","0810","0804","0802","0805","0823","1202","1201"] # 北航专业代码
     # category = ["0807","0701"]
-    categories = ["0777"]
-    schoolname = '北京航空航天大学'
-    # savepath = r'D:\Users\pachong\yzw_spider\北航'
+    # categories = ["0777","0831","0855"]
+    # schoolname = '北京航空航天大学'
+    savepath = r'C:\Users\lenovo\Desktop\BCI APPLICATION\webProj\item\yzw_spider\所有数据'
     last_data = []
-    savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\北航'
+    # savepath = r'C:\Users\lenovo\Desktop\勤思2023\spider_fromcuiqingcai\yzw_spider\所有数据'
    
     provinceNmaeDict = {
     '11': '北京市',
@@ -52,18 +53,22 @@ if __name__ == '__main__':
     ##################################
     ##################################
     for i in list(provinceNmaeDict.keys()): #将keys转化为列表
-        for category in categories:
-            province = i
-            if province in provinceNmaeDict.keys():
-                spyder = Graduate(province, category, provinceNmaeDict[province],schoolname)
-                spyder.get_schools_data()
-                # spyder2 = Graduate(province, category, provinceNmaeDict[province],schoolname)
-                # B = spyder.get_final_data()
-                last_data.extend(spyder.data)
-                # print(last_data)
-    openfilename = get_data_frame(last_data) 
-    time.sleep(1) # 延迟时间1s
+        dicts = excel2dict()
+        print(type(dicts))
+        for key in dicts:
+            for category in dicts[key]:
+        # for category in categories:
+                province = i
+                if province in provinceNmaeDict.keys():
+                    spyder = Graduate(province, category, provinceNmaeDict[province],key)
+                    spyder.get_schools_data()
+                    # spyder2 = Graduate(province, category, provinceNmaeDict[province],schoolname)
+                    # B = spyder.get_final_data()
+                    last_data.extend(spyder.data)
+                    # print(last_data)
+        openfilename = get_data_frame(last_data) 
+        time.sleep(1) # 延迟时间1s
                  
-# for i in n:
-#     copy_paste_excel_columns(openfilename,i,savepath) 
+for i in n:
+    copy_paste_excel_columns(openfilename,i,savepath) 
 
